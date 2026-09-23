@@ -31,45 +31,45 @@ python3 scripts/fetch_trending.py --out trending_raw.json --periods daily,weekly
 ```json
 {
   "summary": {
-      "lead": "顶部导读，一句总览……",
-          "daily": "今日看点……",
-              "weekly": "本周看点……",
-                  "monthly": "本月看点……"
-                    },
-                      "repos": {
-                          "anthropics/financial-services": {
-                                "intro": "一句话，说清它是什么、给谁用、用在什么场景。",
-                                      "tags": ["AI Agent", "金融"]
-                                          }
-                                            }
-                                            }
-                                            ```
+    "lead": "顶部导读，一句总览……",
+    "daily": "今日看点……",
+    "weekly": "本周看点……",
+    "monthly": "本月看点……"
+  },
+  "repos": {
+    "anthropics/financial-services": {
+      "intro": "一句话，说清它是什么、给谁用、用在什么场景。",
+      "tags": ["AI Agent", "金融"]
+    }
+  }
+}
+```
 
-                                            **写人话的硬要求（避免 AI 腔）：**
-                                            - `intro` 只写一句话，句式「它是什么 + 给谁 / 在什么场景用」。要具体，不喊口号。
-                                            - **禁用**这类词：赋能、助力、一站式、生态、闭环、解决方案、助力企业、降本增效、开启新时代。
-                                            - **禁用**「它是一款……」的模板腔，也禁用感叹号和营销话术。
-                                            - 描述为空或拿不准的仓库，先读仓库主页核实再写；实在不知道就写「（待核实）」，绝不硬编。
-                                            - `tags` **必须恰好 2 个**，要具体（如 `RAG`、`模型推理`、`浏览器自动化`），不要用「工具」「应用」这种空泛词。
-                                            - 仓库在多个周期重复出现时，注解只写一份，按 `owner/name` 复用。
+**写人话的硬要求（避免 AI 腔）：**
+- `intro` 只写一句话，句式「它是什么 + 给谁 / 在什么场景用」。要具体，不喊口号。
+- **禁用**这类词：赋能、助力、一站式、生态、闭环、解决方案、助力企业、降本增效、开启新时代。
+- **禁用**「它是一款……」的模板腔，也禁用感叹号和营销话术。
+- 描述为空或拿不准的仓库，先读仓库主页核实再写；实在不知道就写「（待核实）」，绝不硬编。
+- `tags` **必须恰好 2 个**，要具体（如 `RAG`、`模型推理`、`浏览器自动化`），不要用「工具」「应用」这种空泛词。
+- 仓库在多个周期重复出现时，注解只写一份，按 `owner/name` 复用。
 
-                                            `summary` 可选；不填则日报没有导读，不报错。
+`summary` 可选；不填则日报没有导读，不报错。
 
-                                            ## 第 3 步：渲染
+## 第 3 步：渲染
 
-                                            ```bash
-                                            python3 scripts/build_report.py \
-                                              --raw trending_raw.json \
-                                                --annotations annotations.json \
-                                                  --template assets/report_template.html \
-                                                    --out 日报输出路径.html
-                                                    ```
+```bash
+python3 scripts/build_report.py \
+  --raw trending_raw.json \
+  --annotations annotations.json \
+  --template assets/report_template.html \
+  --out 日报输出路径.html
+```
 
-                                                    - 输出是**自包含单文件 HTML**（内联 CSS、内联 SVG 图标、无外部依赖），直接浏览器打开即可。
-                                                    - 缺注解的仓库卡片会标「待补注解」，不会硬编内容。
+- 输出是**自包含单文件 HTML**（内联 CSS、内联 SVG 图标、无外部依赖），直接浏览器打开即可。
+- 缺注解的仓库卡片会标「待补注解」，不会硬编内容。
 
-                                                    ## 第 4 步：自检与交付
+## 第 4 步：自检与交付
 
-                                                    1. 用 `html` skill 的 `shot.py` 渲染桌面 + 移动截图，核对排版与数据（星数、标签、简介是否都正常显示）。
-                                                    2. 抽查 2-3 条星数与仓库主页是否一致，防止抓取或注解错位。
-                                                    3. 用 `present_files` 交付生成的 `.html`，交付说明里写明数据抓取时间与数据源。
+1. 用 `html` skill 的 `shot.py` 渲染桌面 + 移动截图，核对排版与数据（星数、标签、简介是否都正常显示）。
+2. 抽查 2-3 条星数与仓库主页是否一致，防止抓取或注解错位。
+3. 用 `present_files` 交付生成的 `.html`，交付说明里写明数据抓取时间与数据源。
