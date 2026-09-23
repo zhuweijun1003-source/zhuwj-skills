@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GitHub 趋势日报 · {{REPORT_DATE}}</title>
+<style>
+  :root{
+    --paper:#f7f4ee;
+    --ink:#1c1a17;
+    --ink-2:#6b675f;
+    --line:#e2ddd2;
+    --accent:#0f6b5f;
+    --accent-soft:#e7f0ec;
+    --card:#ffffff;
+    --tag-bg:#f0ece2;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1080px;margin:0 auto;padding:32px 20px 56px;}
+
+  /* 报头 */
+  .masthead{border-bottom:3px double var(--ink);padding-bottom:18px;margin-bottom:22px;}
+  .kicker{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-2);margin:0 0 8px;}
+  h1{font-family:Georgia,"Songti SC","SimSun",serif;font-weight:700;font-size:clamp(28px,5vw,44px);margin:0 0 6px;letter-spacing:.01em;}
+  .dateline{font-size:14px;color:var(--ink-2);display:flex;flex-wrap:wrap;gap:6px 18px;align-items:baseline;}
+  .dateline .dot{opacity:.5;}
+
+  /* 导读 */
+  .lead{margin:0 0 30px;font-size:16.5px;color:var(--ink);border-left:4px solid var(--accent);padding:6px 0 6px 16px;background:var(--accent-soft);border-radius:0 8px 8px 0;}
+
+  /* 顶部导航 */
+  .nav{position:sticky;top:0;z-index:50;background:rgba(247,244,238,.94);backdrop-filter:blur(6px);border-bottom:1px solid var(--line);}
+  .nav-in{max-width:1080px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+  .nav a{color:var(--ink);text-decoration:none;font-size:14px;padding:5px 12px;border-radius:20px;border:1px solid transparent;}
+  .nav a:hover{background:var(--accent-soft);color:var(--accent);}
+  .nav .spacer{flex:1;}
+  .export-btn{font-size:14px;padding:6px 16px;border-radius:20px;border:1px solid var(--accent);background:var(--accent);color:#fff;cursor:pointer;font-family:inherit;}
+  .export-btn:hover{opacity:.9;}
+  .export-btn:disabled{opacity:.6;cursor:progress;}
+
+  /* 板块 */
+  .sec{margin:0 0 40px;scroll-margin-top:66px;}
+  .sec-head{border-bottom:2px solid var(--ink);margin-bottom:14px;padding-bottom:8px;display:flex;align-items:baseline;justify-content:space-between;gap:12px;}
+  .sec-head h2{font-family:Georgia,"Songti SC","SimSun",serif;font-size:24px;margin:0;}
+  .sec-head .count{font-size:13px;color:var(--ink-2);font-weight:400;font-family:inherit;}
+  .takeaway{margin:0 0 14px;font-size:14.5px;color:var(--ink-2);}
+
+  /* 卡片 */
+  .grid{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,1fr);gap:16px;}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px 18px;display:flex;flex-direction:column;gap:10px;}
+  .card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+  .repo{font-weight:700;font-size:16px;color:var(--ink);text-decoration:none;word-break:break-all;}
+  .repo:hover{color:var(--accent);text-decoration:underline;}
+  .repo .slash{color:var(--ink-2);font-weight:400;margin:0 3px;}
+  .lang{flex:none;font-size:11px;color:var(--ink-2);border:1px solid var(--line);border-radius:20px;padding:1px 10px;white-space:nowrap;background:var(--tag-bg);}
+  .intro{margin:0;font-size:14.5px;color:#35322d;flex:1;}
+  .intro .missing{color:#b04a2f;}
+  .tags{display:flex;flex-wrap:wrap;gap:6px;}
+  .tag{font-size:12px;background:var(--accent-soft);color:var(--accent);border:1px solid #cfe0d8;border-radius:20px;padding:1px 10px;}
+  .meta{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;color:var(--ink-2);border-top:1px dashed var(--line);padding-top:9px;}
+  .meta span{display:inline-flex;align-items:center;gap:4px;}
+  .period-up{color:var(--accent);font-weight:600;}
+  .ic{width:13px;height:13px;fill:currentColor;flex:none;}
+
+  footer{margin-top:8px;padding-top:14px;border-top:1px solid var(--line);font-size:12.5px;color:var(--ink-2);display:flex;flex-wrap:wrap;gap:4px 18px;}
+
+  @media(max-width:720px){
+    .grid{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-in">
+      <a href="#daily">今日热门</a>
+      <a href="#weekly">本周热门</a>
+      <a href="#monthly">本月热门</a>
+      <span class="spacer"></span>
+      <button class="export-btn" id="export-btn" type="button">导出长图</button>
+    </div>
+  </nav>
+  <div class="wrap">
+    <header class="masthead">
+      <p class="kicker">Open Source Radar</p>
+      <h1>GitHub 趋势日报</h1>
+      <div class="dateline">
+        <span>{{REPORT_DATE}}</span>
+        <span class="dot">·</span>
+        <span>共收录 {{TOTAL_REPOS}} 个热门仓库</span>
+        <span class="dot">·</span>
+        <span>数据源：GitHub Trending 官方页</span>
+      </div>
+    </header>
+
+    {{LEAD}}
+
+    <main>
+      {{SECTIONS}}
+    </main>
+
+    <footer>
+      <span>数据来源：GitHub Trending，仅供学习使用。</span>
+      <span>数据抓取时间：{{FETCHED_AT}}</span>
+      <span>介绍与标签由 AI 依据仓库信息整理，个别仓库描述可能滞后，以仓库主页为准。</span>
+    </footer>
+  </div>
+
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script>
+  document.getElementById('export-btn').addEventListener('click', async function () {
+    var btn = this;
+    var old = btn.textContent;
+    btn.textContent = '生成中…';
+    btn.disabled = true;
+    try {
+      if (typeof html2canvas === 'undefined') throw new Error('lib');
+      var el = document.querySelector('.wrap');
+      var canvas = await html2canvas(el, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: '#f7f4ee',
+        logging: false,
+        windowWidth: el.scrollWidth
+      });
+      var a = document.createElement('a');
+      a.download = 'GitHub趋势日报_长图_' + new Date().toISOString().slice(0, 10) + '.png';
+      a.href = canvas.toDataURL('image/png');
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    } catch (e) {
+      alert('导出失败，请检查网络后重试');
+    } finally {
+      btn.textContent = old;
+      btn.disabled = false;
+    }
+  });
+</script>
+</body>
+</html>
